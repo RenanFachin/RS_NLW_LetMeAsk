@@ -5,11 +5,12 @@ module.exports = {
     './index.html'
   ],
   theme: {
-    fontFamily:{
+    fontFamily: {
       Roboto: ['Roboto', 'sans-serif'],
       Poppins: ['Poppins', 'sans-serif']
     },
     colors: {
+      google: '#ea4335',
       details: '#FEFEFE',
       black: '#29292E',
       white: '#f8f8f8',
@@ -25,13 +26,13 @@ module.exports = {
         hover: '#D73754'
       },
       gray: {
-        300:'#DBDCDD',
-        500:'#A8A8B3',
-        800:'#737380'
+        300: '#DBDCDD',
+        500: '#A8A8B3',
+        800: '#737380'
       },
       gray_hover: {
-        300:'#CECECE',
-        500:'#7E7E86',
+        300: '#CECECE',
+        500: '#7E7E86',
       },
       pink: {
         300: '#D67EE2',
@@ -39,7 +40,12 @@ module.exports = {
       }
 
     },
-    extend: {},
+    extend: {
+      flex: {
+        '5': '5 5 0%',
+        '8': '8 8 0%'
+      }
+    },
   },
   plugins: [],
 }
