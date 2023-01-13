@@ -9,10 +9,19 @@ import illustrationImg from '../assets/illustration.svg'
 import logoImg from '../assets/logo.svg'
 import googleIconImg from '../assets/google-icon.svg'
 
+// Contexts e Hooks
+import { useAuth } from '../hooks/useAuth'
+
 export function Home() {
     const navigate = useNavigate()
+    const { user, signInWithGoogle } = useAuth()
 
-    function navigateToNewRoom() {
+    async function handleCreateRoom() {
+        if (!user) {
+            await signInWithGoogle()
+        }
+
+
         navigate('/rooms/new')
     }
 
@@ -44,7 +53,7 @@ export function Home() {
 
                     <button
                         className='mt-16 h-12 rounded-lg font-medium bg-google flex justify-center items-center cursor-pointer border-0 text-[#fff] hover:brightness-90 transition-all'
-                        onClick={navigateToNewRoom}
+                        onClick={handleCreateRoom}
                     >
                         <img
                             src={googleIconImg}

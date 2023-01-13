@@ -4,19 +4,23 @@ import { Route, Routes } from "react-router-dom";
 import { Home } from '../pages/Home'
 import { NewRoom } from "../pages/NewRoom";
 
+// Contextos
+import { AuthContextProvider } from "../contexts/AuthContext";
+
 export function Router() {
     return (
-        <Routes>
-            <Route
-                path="/"  
-                element={<Home />}
-            />
+        <AuthContextProvider>
+            <Routes>
+                <Route
+                    path="/"
+                    element={<Home />}
+                />
 
-            <Route
-                path="/rooms/new"
-                element={<NewRoom />}
-            />
-        </Routes>
-
+                <Route
+                    path="/rooms/new"
+                    element={<NewRoom />}
+                />
+            </Routes>
+        </AuthContextProvider>
     )
 }
