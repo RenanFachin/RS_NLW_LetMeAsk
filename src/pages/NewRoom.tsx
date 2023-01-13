@@ -1,7 +1,13 @@
+// Navegação
+import { Link } from 'react-router-dom'
+
+// Components
+import { Button } from '../components/Button'
+
+// SVGs
 import illustrationImg from '../assets/illustration.svg'
 import logoImg from '../assets/logo.svg'
-import googleIconImg from '../assets/google-icon.svg'
-import { Button } from '../components/Button'
+
 
 export function NewRoom() {
     return (
@@ -49,9 +55,9 @@ export function NewRoom() {
                     <p className='text-sm text-gray-800 mt-4'>
                         Quer entrar em uma sala existente?
 
-                        <a href='#' className='text-pink-500 ml-1'>
+                        <Link to='/' className='text-pink-500 ml-1'>
                             Clique aqui
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </main>

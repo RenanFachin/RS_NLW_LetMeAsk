@@ -1,9 +1,21 @@
+// Components
+import { Button } from '../components/Button'
+
+// Hooks de navegação
+import { useNavigate } from 'react-router-dom'
+
+// SVGs
 import illustrationImg from '../assets/illustration.svg'
 import logoImg from '../assets/logo.svg'
 import googleIconImg from '../assets/google-icon.svg'
-import { Button } from '../components/Button'
 
 export function Home() {
+    const navigate = useNavigate()
+
+    function navigateToNewRoom() {
+        navigate('/rooms/new')
+    }
+
     return (
         <div className='h-screen flex items-stretch'>
             <aside className='flex-5 bg-purple-500 text-[#fff] flex flex-col py-32 px-20'>
@@ -31,7 +43,9 @@ export function Home() {
                     />
 
                     <button
-                        className='mt-16 h-12 rounded-lg font-medium bg-google flex justify-center items-center cursor-pointer border-0 text-[#fff] hover:brightness-90 transition-all'>
+                        className='mt-16 h-12 rounded-lg font-medium bg-google flex justify-center items-center cursor-pointer border-0 text-[#fff] hover:brightness-90 transition-all'
+                        onClick={navigateToNewRoom}
+                    >
                         <img
                             src={googleIconImg}
                             alt="logo do google"
