@@ -22,6 +22,8 @@ export function Room() {
 
     const [newQuestion, setNewQuestion] = useState('')
 
+    console.log(user)
+
     async function handleSendQuestion(e: FormEvent) {
         e.preventDefault()
 
@@ -43,9 +45,10 @@ export function Room() {
             isAnswered: false
         }
 
-        try{
+        try {
             await database.ref(`rooms/${roomId}/questions`).push(question)
             toast.success("Pergunta realizada com sucesso!")
+            setNewQuestion('')
         } catch {
             throw new Error(toast.error("Não foi possível enviar sua pergunta."))
         }
@@ -86,16 +89,33 @@ export function Room() {
                         className="w-full border-0 p-4 rounded-lg bg-details shadow-sm resize-y min-h-[130px]"
                         placeholder="O que você quer perguntar?"
                         onChange={e => setNewQuestion(e.target.value)}
-                        value={newQuestion}
+                        value={newQuestion} // este value é utilizado para zerar o valor após o envio
                     />
 
                     <div className="flex justify-between items-center mt-4">
-                        <span className="text-sm text-gray-800 font-medium">
-                            Para enviar uma pergunta,
-                            <button className="ml-1 text-purple-500 underline text-sm font-medium cursor-pointer hover:text-purple-hover">
-                                faça seu login
-                            </button>.
-                        </span>
+
+                        {user ? (
+                            <div className="flex items-center">
+                                <img
+                                    className="w-8 h-8 rounded-full"
+                                    src={user.avatar}
+                                    alt={user.name}
+                                />
+
+                                <span className="ml-2 text-bold font-bold text-sm">
+                                    {user.name.toUpperCase()}
+                                </span>
+                            </div>
+                        ) : (
+                            <span className="text-sm text-gray-800 font-medium">
+                                Para enviar uma pergunta,
+                                <button className="ml-1 text-purple-500 underline text-sm font-medium cursor-pointer hover:text-purple-hover">
+                                    faça seu login
+                                </button>.
+                            </span>
+                        )}
+
+
 
                         <Button type="submit" disabled={!user}>
                             Enviar pergunta
@@ -105,6 +125,6 @@ export function Room() {
                     </div>
                 </form>
             </main>
-        </div>
+        </div >
     )
 }
