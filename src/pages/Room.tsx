@@ -1,24 +1,29 @@
 import { useParams } from "react-router-dom"
 import logoImg from '../assets/logo.svg'
 import { Button } from "../components/Button"
+import { RoomCode } from "../components/RoomCode"
+
+// Por padrão o useParams não sabe o que pode ser recebido na rota
+type RoomParams = {
+    id: string;
+}
 
 export function Room() {
-    const {id} = useParams()
+    const params = useParams<RoomParams>()
+    const roomId = params.id;
 
 
-    return(
+    return (
         <div>
             <header className="p-6 border-b-[1px] border-solid border-[#e2e2e2]">
                 <div className="max-w-5xl mx-auto flex justify-between items-center">
-                    <img 
-                        src={logoImg} 
-                        alt="LetMeAsk" 
+                    <img
+                        src={logoImg}
+                        alt="LetMeAsk"
                         className="max-h-11"
                     />
 
-                    <div className="">
-                        Código
-                    </div>
+                    <RoomCode code={roomId} />
                 </div>
             </header>
 
@@ -29,15 +34,15 @@ export function Room() {
                         Sala React
                     </h1>
 
-                    <span 
-                    className="ml-4 bg-pink-500 rounded-full py-2 px-4 text-white font-medium text-sm">
+                    <span
+                        className="ml-4 bg-pink-500 rounded-full py-2 px-4 text-white font-medium text-sm">
                         4 perguntas
                     </span>
                 </div>
 
 
                 <form>
-                    <textarea 
+                    <textarea
                         className="w-full border-0 p-4 rounded-lg bg-details shadow-sm resize-y min-h-[130px]"
                         placeholder="O que você quer perguntar?"
                     />
