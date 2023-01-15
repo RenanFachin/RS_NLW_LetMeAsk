@@ -11,19 +11,42 @@ import googleIconImg from '../assets/google-icon.svg'
 
 // Contexts e Hooks
 import { useAuth } from '../hooks/useAuth'
+import { FormEvent, useState } from 'react'
+import { database } from '../services/firebase'
 
 export function Home() {
     const navigate = useNavigate()
     const { user, signInWithGoogle } = useAuth()
 
+    const [roomCode, setRoomCode] = useState('')
+
+    // Criando uma sala nova após realizar autenticação
     async function handleCreateRoom() {
         if (!user) {
             await signInWithGoogle()
         }
-
-
         navigate('/rooms/new')
     }
+
+    // Entrando em uma sala existente
+    async function handleJoinRoom(e: FormEvent){
+        e.preventDefault()
+
+        if(roomCode.trim() === ''){
+            return
+        }
+
+        // Verificando se a sala existe no db
+        const roomRef = await database.ref(`rooms/${roomCode}`).get()
+
+        if (!roomRef.exists()){
+            alert('Room does not exists')
+            return
+        }
+
+        navigate(`/rooms/${roomCode}`)
+    }
+
 
     return (
         <div className='h-screen flex items-stretch'>
@@ -69,11 +92,13 @@ export function Home() {
                         Ou entre em uma sala
                     </div>
 
-                    <form className='flex flex-col'>
+                    <form className='flex flex-col' onSubmit={handleJoinRoom}>
                         <input
                             className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500'
                             type="text"
                             placeholder='Digite o código da sala'
+                            onChange={e => setRoomCode(e.target.value)}
+                            value={roomCode}
                         />
 
                         <Button type='submit'>
