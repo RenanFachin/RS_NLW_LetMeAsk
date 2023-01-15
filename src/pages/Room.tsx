@@ -1,7 +1,12 @@
+import { FormEvent, useState } from "react"
 import { useParams } from "react-router-dom"
 import logoImg from '../assets/logo.svg'
 import { Button } from "../components/Button"
 import { RoomCode } from "../components/RoomCode"
+import { useAuth } from "../hooks/useAuth"
+
+import toast, { Toaster } from 'react-hot-toast'
+import { database } from "../services/firebase"
 
 // Por padrão o useParams não sabe o que pode ser recebido na rota
 type RoomParams = {
@@ -9,12 +14,47 @@ type RoomParams = {
 }
 
 export function Room() {
+
+    const { user } = useAuth()
+
     const params = useParams<RoomParams>()
     const roomId = params.id;
+
+    const [newQuestion, setNewQuestion] = useState('')
+
+    async function handleSendQuestion(e: FormEvent) {
+        e.preventDefault()
+
+        if (newQuestion.trim() === '') {
+            throw new Error(toast.error("Não foi possível enviar sua pergunta."))
+        }
+
+        if (!user) {
+            throw new Error(toast.error("Não foi possível enviar sua pergunta."))
+        }
+
+        const question = {
+            content: newQuestion,
+            author: {
+                name: user.name,
+                avatar: user.avatar
+            },
+            isHighLighted: false,
+            isAnswered: false
+        }
+
+        try{
+            await database.ref(`rooms/${roomId}/questions`).push(question)
+            toast.success("Pergunta realizada com sucesso!")
+        } catch {
+            throw new Error(toast.error("Não foi possível enviar sua pergunta."))
+        }
+    }
 
 
     return (
         <div>
+            <Toaster position="top-right" reverseOrder={false} />
             <header className="p-6 border-b-[1px] border-solid border-[#e2e2e2]">
                 <div className="max-w-5xl mx-auto flex justify-between items-center">
                     <img
@@ -41,10 +81,12 @@ export function Room() {
                 </div>
 
 
-                <form>
+                <form onSubmit={handleSendQuestion}>
                     <textarea
                         className="w-full border-0 p-4 rounded-lg bg-details shadow-sm resize-y min-h-[130px]"
                         placeholder="O que você quer perguntar?"
+                        onChange={e => setNewQuestion(e.target.value)}
+                        value={newQuestion}
                     />
 
                     <div className="flex justify-between items-center mt-4">
@@ -55,9 +97,11 @@ export function Room() {
                             </button>.
                         </span>
 
-                        <Button type="submit">
+                        <Button type="submit" disabled={!user}>
                             Enviar pergunta
                         </Button>
+
+
                     </div>
                 </form>
             </main>
