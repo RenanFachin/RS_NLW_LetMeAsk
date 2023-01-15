@@ -1,5 +1,5 @@
 // Navegação
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 // Components
 import { Button } from '../components/Button'
@@ -8,14 +8,39 @@ import { Button } from '../components/Button'
 import illustrationImg from '../assets/illustration.svg'
 import logoImg from '../assets/logo.svg'
 import { useAuth } from '../hooks/useAuth'
+import { FormEvent, useState } from 'react'
+import { database } from '../services/firebase'
 
 // Contextos
 // import { useContext } from 'react'
 // import { AuthContext } from '../contexts/AuthContext'
 
 export function NewRoom() {
-    // const { user } = useContext(AuthContext)
+
+    const navigate = useNavigate()
     const { user } = useAuth()
+
+    const [newRoom, setNewRoom] = useState('')
+
+    async function handleCreateRoom(e: FormEvent){
+        e.preventDefault()
+
+        // Validando se o nome digitado é válido
+        if (newRoom.trim() === '') {
+            return
+        }
+
+        // Firebase
+        const roomRef = database.ref('rooms') // Procurando uma referência "rooms" no db
+
+        const firebaseRoom = await roomRef.push({
+            title : newRoom,
+            authorId: user?.id,
+        }) // Fazendo o envio das infos
+
+        // Redirecionamento para sala criada - o key é o id gerado na criação da sala
+        navigate(`/rooms/${firebaseRoom.key}`)
+    }
 
     return (
         <div className='h-screen flex items-stretch'>
@@ -49,11 +74,13 @@ export function NewRoom() {
                     Criar uma nova sala
                 </h2>
 
-                <form className='flex flex-col mt-6'>
+                <form className='flex flex-col mt-6' onSubmit={handleCreateRoom}>
                     <input
                         className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500'
                         type="text"
                         placeholder='Digite o código da sala'
+                        onChange={event => setNewRoom(event.target.value)}
+                        value={newRoom}
                     />
 
                     <Button type='submit'>
