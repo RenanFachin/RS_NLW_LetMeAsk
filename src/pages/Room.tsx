@@ -1,4 +1,4 @@
-import { FormEvent, useState } from "react"
+import { FormEvent, useEffect, useState } from "react"
 import { useParams } from "react-router-dom"
 import logoImg from '../assets/logo.svg'
 import { Button } from "../components/Button"
@@ -13,6 +13,28 @@ type RoomParams = {
     id: string;
 }
 
+type FirebaseQuestions = Record<string, {
+    author: {
+        name: string;
+        avataR: string;
+    }
+    content: string;
+    isAnswered: string;
+    isHighlighted: string;
+}>
+
+type Question = {
+    id: string;
+    author: {
+        name: string;
+        avataR: string;
+    }
+    content: string;
+    isAnswered: string;
+    isHighlighted: string;
+}
+
+
 export function Room() {
 
     const { user } = useAuth()
@@ -21,8 +43,8 @@ export function Room() {
     const roomId = params.id;
 
     const [newQuestion, setNewQuestion] = useState('')
-
-    console.log(user)
+    const [questions, setQuestions] = useState<Question[]>([]) // qnd é array precisamos tipar o que vem dentro dele
+    const [title, setTitle] = useState('')
 
     async function handleSendQuestion(e: FormEvent) {
         e.preventDefault()
@@ -54,6 +76,27 @@ export function Room() {
         }
     }
 
+    useEffect(() => {
+        const roomRef = database.ref(`/rooms/${roomId}`)
+
+        // .on serve para ficar escutando lá na api (Realtime)
+        roomRef.on('value', room => {
+            const databaseRoom = room.val()
+            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {}
+
+            const parsedQuestions = Object.entries(firebaseQuestions).map(([key, value]) => {
+                return {
+                    id: key,
+                    content: value.content,
+                    author: value.author,
+                    isAnswered: value.isAnswered,
+                    isHighlighted: value.isHighlighted
+                }
+            })
+            setTitle(databaseRoom.title)
+            setQuestions(parsedQuestions)
+        })
+    }, [roomId]) //passando roomID como critério para disparo da função useEffect para evitar bugs durante o uso da aplicação
 
     return (
         <div>
@@ -73,14 +116,18 @@ export function Room() {
 
             <main className="max-w-[800px] mx-auto">
                 <div className="mt-8 mb-6 mx-0 flex items-center">
-                    <h1 className="font-Poppins text-base text-black">
-                        Sala React
+                    <h1 className="font-Poppins text-2xl text-black font-bold">
+                        Sala <span className="text-purple-500">{title}</span>
                     </h1>
 
-                    <span
-                        className="ml-4 bg-pink-500 rounded-full py-2 px-4 text-white font-medium text-sm">
-                        4 perguntas
-                    </span>
+                    {questions.length > 0 && (
+                        <span
+                            className="ml-4 bg-pink-500 rounded-full py-2 px-4 text-white font-medium text-sm">
+                            {questions.length} pergunta(s)
+                        </span>
+                    )}
+
+
                 </div>
 
 
@@ -96,11 +143,11 @@ export function Room() {
 
                         {user ? (
                             <div className="flex items-center">
-                                <img
+                                {/* <img
                                     className="w-8 h-8 rounded-full"
-                                    src={user.avatar}
+                                    src={}
                                     alt={user.name}
-                                />
+                                /> */}
 
                                 <span className="ml-2 text-bold font-bold text-sm">
                                     {user.name.toUpperCase()}
@@ -124,6 +171,8 @@ export function Room() {
 
                     </div>
                 </form>
+
+                {JSON.stringify(questions)}
             </main>
         </div >
     )
