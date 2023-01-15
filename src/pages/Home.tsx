@@ -94,7 +94,7 @@ export function Home() {
 
                     <form className='flex flex-col' onSubmit={handleJoinRoom}>
                         <input
-                            className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500'
+                            className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500 mb-4'
                             type="text"
                             placeholder='Digite o código da sala'
                             onChange={e => setRoomCode(e.target.value)}
@@ -104,9 +104,6 @@ export function Home() {
                         <Button type='submit'>
                             Entrar na sala
                         </Button>
-                        {/* <button type='submit' className='mt-4'>
-                           
-                        </button> */}
                     </form>
                 </div>
             </main>

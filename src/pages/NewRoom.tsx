@@ -76,7 +76,7 @@ export function NewRoom() {
 
                 <form className='flex flex-col mt-6' onSubmit={handleCreateRoom}>
                     <input
-                        className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500'
+                        className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500 mb-4'
                         type="text"
                         placeholder='Digite o código da sala'
                         onChange={event => setNewRoom(event.target.value)}
