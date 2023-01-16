@@ -15,6 +15,8 @@ import { FormEvent, useState } from 'react'
 import { database } from '../services/firebase'
 import { Input } from '../components/Input'
 
+import toast, { Toaster } from 'react-hot-toast'
+
 export function Home() {
     const navigate = useNavigate()
     const { user, signInWithGoogle } = useAuth()
@@ -34,15 +36,18 @@ export function Home() {
         e.preventDefault()
 
         if (roomCode.trim() === '') {
-            return
+            throw new Error(toast.error("Room does not exists"))
         }
 
         // Verificando se a sala existe no db
         const roomRef = await database.ref(`rooms/${roomCode}`).get()
 
         if (!roomRef.exists()) {
-            alert('Room does not exists')
-            return
+            throw new Error(toast.error("Room does not exists"))
+        }
+
+        if(roomRef.val().endedAt){
+            throw new Error(toast.error("Room already closed"))
         }
 
         navigate(`/rooms/${roomCode}`)
@@ -51,6 +56,7 @@ export function Home() {
 
     return (
         <div className='h-screen flex items-stretch'>
+            <Toaster position="top-center" reverseOrder={false} />
             <aside className='flex-5 bg-purple-500 text-[#fff] flex flex-col py-32 px-20'>
                 <img
                     src={illustrationImg}

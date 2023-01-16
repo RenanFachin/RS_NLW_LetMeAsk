@@ -1,3 +1,4 @@
+import { ReactNode } from "react";
 import { CiUser } from "react-icons/ci";
 
 interface QuestionProps {
@@ -6,9 +7,10 @@ interface QuestionProps {
         name: string;
         avatar: string;
     }
+    children?: ReactNode;
 }
 
-export function Question({ content, author }: QuestionProps) {
+export function Question({ content, author, children }: QuestionProps) {
 
     return (
         <div className="bg-details rounded-lg shadow p-6 mt-4">
@@ -29,7 +31,9 @@ export function Question({ content, author }: QuestionProps) {
                 </div>
 
 
-                <div></div>
+                <div className="">
+                    {children}
+                </div>
             </footer>
         </div>
     )

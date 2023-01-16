@@ -1,7 +1,5 @@
 // Hooks e Firebase
-import { useAuth } from "../hooks/useAuth"
 import { useNavigate, useParams } from "react-router-dom"
-import { FormEvent, useEffect, useState } from "react"
 import { database } from "../services/firebase"
 
 // Components
@@ -9,12 +7,12 @@ import { Button } from "../components/Button"
 import { RoomCode } from "../components/RoomCode"
 
 // Assets e customizações
-import toast, { Toaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import logoImg from '../assets/logo.svg'
-import { CiUser } from 'react-icons/ci'
 import { Question } from "../components/Question"
 import { useRoom } from "../hooks/useRoom"
-
+import { BsTrash } from 'react-icons/bs'
+import { AiOutlineCheckCircle } from 'react-icons/ai'
 
 // Tipagem
 // Por padrão o useParams não sabe o que pode ser recebido na rota
@@ -25,19 +23,28 @@ type RoomParams = {
 
 export function AdminRoom() {
     const navigate = useNavigate()
-    const { user } = useAuth()
-
 
     const params = useParams<RoomParams>()
     const roomId = params.id;
     const { title, questions } = useRoom(roomId as string)
 
 
-    const [newQuestion, setNewQuestion] = useState('')
-
-
     function handleGoBack() {
         navigate(-1)
+    }
+
+    async function handleDeleteQuestion(questionId: string) {
+        if (confirm('Tem certeza que você deseja encerrar esta sala?')) {
+            await database.ref(`rooms/${roomId}/questions/${questionId}`).remove()
+        }
+    }
+
+    async function handleEndRoom() {
+        await database.ref(`rooms/${roomId}`).update({
+            endedAt: new Date()
+        })
+
+        navigate('/')
     }
 
     return (
@@ -55,7 +62,10 @@ export function AdminRoom() {
                     <div className="flex items-center gap-2">
                         <RoomCode code={roomId} />
 
-                        <Button className="h-10 border-dashed border-[1px] border-purple-hover bg-white text-purple-hover hover:bg-purple-500 hover:text-white hover:border-white">
+                        <Button
+                            className="h-10 border-dashed border-[1px] border-purple-hover bg-white text-purple-hover hover:bg-purple-500 hover:text-white hover:border-white"
+                            onClick={handleEndRoom}
+                        >
                             Encerrar sala
                         </Button>
                     </div>
@@ -87,7 +97,23 @@ export function AdminRoom() {
                                     key={question.id}
                                     content={question.content}
                                     author={question.author}
-                                />
+                                >
+
+                                    <button
+                                        className="flex gap-4"
+                                        type="button"
+                                        onClick={() => handleDeleteQuestion(question.id)}>
+                                        <BsTrash
+                                            className="text-danger-500 hover:brightness-75 transition-all"
+                                            size={24}
+                                        />
+
+                                        <AiOutlineCheckCircle
+                                            className="text-black hover:brightness-75 transition-all"
+                                            size={24}
+                                        />
+                                    </button>
+                                </Question>
                             )
                         })
                     }

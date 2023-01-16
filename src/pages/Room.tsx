@@ -1,7 +1,7 @@
 // Hooks e Firebase
 import { useAuth } from "../hooks/useAuth"
 import { useNavigate, useParams } from "react-router-dom"
-import { FormEvent, useEffect, useState } from "react"
+import { FormEvent, useState } from "react"
 import { database } from "../services/firebase"
 
 // Components
@@ -14,7 +14,7 @@ import logoImg from '../assets/logo.svg'
 import { CiUser } from 'react-icons/ci'
 import { Question } from "../components/Question"
 import { useRoom } from "../hooks/useRoom"
-
+import { AiOutlineLike, AiFillLike } from 'react-icons/ai'
 
 // Tipagem
 // Por padrão o useParams não sabe o que pode ser recebido na rota
@@ -30,7 +30,7 @@ export function Room() {
 
     const params = useParams<RoomParams>()
     const roomId = params.id;
-    const {title, questions} = useRoom(roomId as string)
+    const { title, questions } = useRoom(roomId as string)
 
 
     const [newQuestion, setNewQuestion] = useState('')
@@ -70,7 +70,17 @@ export function Room() {
         }
     }
 
-    
+    async function handleLikeQuestion(questionId: string, likeId: string | undefined) {
+        if (likeId) {
+            // remover like
+            await database.ref(`rooms/${roomId}/questions/${questionId}/likes/${likeId}`).remove()
+        } else {
+            await database.ref(`rooms/${roomId}/questions/${questionId}/likes`).push({
+                authorId: user?.id
+            })
+        }
+
+    }
 
     return (
         <div>
@@ -154,7 +164,36 @@ export function Room() {
                                     key={question.id}
                                     content={question.content}
                                     author={question.author}
-                                />
+                                >
+                                    <button
+                                        className="flex items-center flex-col"
+                                        type="button"
+                                        aria-label="Marcar como gostei"
+                                        onClick={() => handleLikeQuestion(question.id, question.likeId)}
+                                    >
+                                        {question.likeCount > 0 && (
+                                            <span className="text-md text-gray-500">
+                                                {question.likeCount}
+                                            </span>
+                                        )}
+
+
+                                        {
+                                            question.likeId ?
+                                                <AiFillLike
+                                                    className="text-purple-500 hover:brightness-75 transition-all"
+                                                    size={24} />
+                                                :
+                                                <AiOutlineLike
+                                                    className="text-black hover:brightness-75 transition-all"
+                                                    size={24}
+                                                />
+                                        }
+
+
+                                    </button>
+                                </Question>
+
                             )
                         })
                     }
