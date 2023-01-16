@@ -1,6 +1,6 @@
 // Hooks e Firebase
 import { useAuth } from "../hooks/useAuth"
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
 import { FormEvent, useEffect, useState } from "react"
 import { database } from "../services/firebase"
 
@@ -11,6 +11,8 @@ import { RoomCode } from "../components/RoomCode"
 // Assets e customizações
 import toast, { Toaster } from 'react-hot-toast'
 import logoImg from '../assets/logo.svg'
+import { CiUser } from 'react-icons/ci'
+import { Question } from "../components/Question"
 
 
 // Tipagem
@@ -22,18 +24,18 @@ type RoomParams = {
 type FirebaseQuestions = Record<string, {
     author: {
         name: string;
-        avataR: string;
+        avatar: string;
     }
     content: string;
     isAnswered: string;
     isHighlighted: string;
 }>
 
-type Question = {
+type QuestionType = {
     id: string;
     author: {
         name: string;
-        avataR: string;
+        avatar: string;
     }
     content: string;
     isAnswered: string;
@@ -42,15 +44,19 @@ type Question = {
 
 
 export function Room() {
-
+    const navigate = useNavigate()
     const { user } = useAuth()
 
     const params = useParams<RoomParams>()
     const roomId = params.id;
 
     const [newQuestion, setNewQuestion] = useState('')
-    const [questions, setQuestions] = useState<Question[]>([]) // qnd é array precisamos tipar o que vem dentro dele
+    const [questions, setQuestions] = useState<QuestionType[]>([]) // qnd é array precisamos tipar o que vem dentro dele
     const [title, setTitle] = useState('')
+
+    function handleGoBack() {
+        navigate(-1)
+    }
 
     async function handleSendQuestion(e: FormEvent) {
         e.preventDefault()
@@ -112,7 +118,8 @@ export function Room() {
                     <img
                         src={logoImg}
                         alt="LetMeAsk"
-                        className="max-h-11"
+                        className="max-h-11 cursor-pointer"
+                        onClick={handleGoBack}
                     />
 
                     <RoomCode code={roomId} />
@@ -139,7 +146,7 @@ export function Room() {
 
                 <form onSubmit={handleSendQuestion}>
                     <textarea
-                        className="w-full border-0 p-4 rounded-lg bg-details shadow-sm resize-y min-h-[130px]"
+                        className="w-full border-0 p-4 rounded-lg bg-details shadow-sm resize-y min-h-[130px] focus:outline-none focus:border-2 focus:border-purple-500"
                         placeholder="O que você quer perguntar?"
                         onChange={e => setNewQuestion(e.target.value)}
                         value={newQuestion} // este value é utilizado para zerar o valor após o envio
@@ -149,11 +156,10 @@ export function Room() {
 
                         {user ? (
                             <div className="flex items-center">
-                                {/* <img
-                                    className="w-8 h-8 rounded-full"
-                                    src={}
-                                    alt={user.name}
-                                /> */}
+                                <CiUser
+                                    className="w-9 h-9 p-2 rounded-full bg-purple-500 text-white"
+                                    size={18}
+                                />
 
                                 <span className="ml-2 text-bold font-bold text-sm">
                                     {user.name.toUpperCase()}
@@ -178,7 +184,19 @@ export function Room() {
                     </div>
                 </form>
 
-                {JSON.stringify(questions)}
+                <div className="mt-8">
+                    {
+                        questions.map(question => {
+                            return (
+                                <Question
+                                    key={question.id}
+                                    content={question.content}
+                                    author={question.author}
+                                />
+                            )
+                        })
+                    }
+                </div>
             </main>
         </div >
     )

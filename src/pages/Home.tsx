@@ -13,6 +13,7 @@ import { BsGoogle } from 'react-icons/bs'
 import { useAuth } from '../hooks/useAuth'
 import { FormEvent, useState } from 'react'
 import { database } from '../services/firebase'
+import { Input } from '../components/Input'
 
 export function Home() {
     const navigate = useNavigate()
@@ -93,9 +94,8 @@ export function Home() {
                     </div>
 
                     <form className='flex flex-col' onSubmit={handleJoinRoom}>
-                        <input
-                            className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500 mb-4'
-                            type="text"
+
+                        <Input 
                             placeholder='Digite o código da sala'
                             onChange={e => setRoomCode(e.target.value)}
                             value={roomCode}

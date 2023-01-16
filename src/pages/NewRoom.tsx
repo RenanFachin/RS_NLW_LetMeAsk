@@ -10,6 +10,7 @@ import logoImg from '../assets/logo.svg'
 import { useAuth } from '../hooks/useAuth'
 import { FormEvent, useState } from 'react'
 import { database } from '../services/firebase'
+import { Input } from '../components/Input'
 
 // Contextos
 // import { useContext } from 'react'
@@ -22,7 +23,7 @@ export function NewRoom() {
 
     const [newRoom, setNewRoom] = useState('')
 
-    async function handleCreateRoom(e: FormEvent){
+    async function handleCreateRoom(e: FormEvent) {
         e.preventDefault()
 
         // Validando se o nome digitado é válido
@@ -34,7 +35,7 @@ export function NewRoom() {
         const roomRef = database.ref('rooms') // Procurando uma referência "rooms" no db
 
         const firebaseRoom = await roomRef.push({
-            title : newRoom,
+            title: newRoom,
             authorId: user?.id,
         }) // Fazendo o envio das infos
 
@@ -70,32 +71,31 @@ export function NewRoom() {
                         className='self-center'
                     />
 
-                <h2 className='text-2xl font-bold font-Poppins mt-14'>
-                    Criar uma nova sala
-                </h2>
+                    <h2 className='text-2xl font-bold font-Poppins mt-14'>
+                        Criar uma nova sala
+                    </h2>
 
-                <form className='flex flex-col mt-6' onSubmit={handleCreateRoom}>
-                    <input
-                        className='h-12 rounded-lg px-4 bg-[#fff] border-[1px] border-solid border-gray-500 mb-4'
-                        type="text"
-                        placeholder='Digite o código da sala'
-                        onChange={event => setNewRoom(event.target.value)}
-                        value={newRoom}
-                    />
+                    <form className='flex flex-col mt-6' onSubmit={handleCreateRoom}>
 
-                    <Button type='submit'>
-                        Criar sala
-                    </Button>
-                </form>
+                        <Input
+                            placeholder='Digite o código da sala'
+                            onChange={event => setNewRoom(event.target.value)}
+                            value={newRoom}
+                        />
 
-                <p className='text-sm text-gray-800 mt-4'>
-                    Quer entrar em uma sala existente?
+                        <Button type='submit'>
+                            Criar sala
+                        </Button>
+                    </form>
 
-                    <Link to='/' className='text-pink-500 ml-1'>
-                        Clique aqui
-                    </Link>
-                </p>
-        </div>
+                    <p className='text-sm text-gray-800 mt-4'>
+                        Quer entrar em uma sala existente?
+
+                        <Link to='/' className='text-pink-500 ml-1'>
+                            Clique aqui
+                        </Link>
+                    </p>
+                </div>
             </main >
         </div >
     )
