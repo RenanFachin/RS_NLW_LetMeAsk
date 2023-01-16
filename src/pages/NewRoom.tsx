@@ -83,7 +83,7 @@ export function NewRoom() {
                             value={newRoom}
                         />
 
-                        <Button type='submit'>
+                        <Button type='submit' className='h-12'>
                             Criar sala
                         </Button>
                     </form>

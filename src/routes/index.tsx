@@ -7,6 +7,7 @@ import { Room } from "../pages/Room";
 
 // Contextos
 import { AuthContextProvider } from "../contexts/AuthContext";
+import { AdminRoom } from "../pages/AdminRoom";
 
 export function Router() {
     return (
@@ -26,6 +27,12 @@ export function Router() {
                     path="/rooms/:id" // Precisa do parâmetro id no envio da requisição
                     element={<Room />}
                 />
+
+                <Route 
+                    path="/admin/rooms/:id"
+                    element={<AdminRoom />}
+                />
+                
             </Routes>
         </AuthContextProvider>
     )

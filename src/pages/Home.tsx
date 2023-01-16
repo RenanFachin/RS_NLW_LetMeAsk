@@ -101,7 +101,7 @@ export function Home() {
                             value={roomCode}
                         />
 
-                        <Button type='submit'>
+                        <Button type='submit' className='h-12'>
                             Entrar na sala
                         </Button>
                     </form>

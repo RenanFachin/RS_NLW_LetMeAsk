@@ -24,6 +24,7 @@ Como parte fundamental do projeto, temos a autenticação com o GOOGLE utilziand
   - [react-router-dom](https://reactrouter.com/)
   - [Tailwindcss](https://tailwindcss.com/)
   - [ReactIcons](https://react-icons.github.io/react-icons)
+  - [clsx](https://www.npmjs.com/package/clsx)
 
 ### Instalação
 ```bash
