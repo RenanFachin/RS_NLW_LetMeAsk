@@ -1,13 +1,19 @@
-import { FormEvent, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
-import logoImg from '../assets/logo.svg'
-import { Button } from "../components/Button"
-import { RoomCode } from "../components/RoomCode"
+// Hooks e Firebase
 import { useAuth } from "../hooks/useAuth"
-
-import toast, { Toaster } from 'react-hot-toast'
+import { useParams } from "react-router-dom"
+import { FormEvent, useEffect, useState } from "react"
 import { database } from "../services/firebase"
 
+// Components
+import { Button } from "../components/Button"
+import { RoomCode } from "../components/RoomCode"
+
+// Assets e customizações
+import toast, { Toaster } from 'react-hot-toast'
+import logoImg from '../assets/logo.svg'
+
+
+// Tipagem
 // Por padrão o useParams não sabe o que pode ser recebido na rota
 type RoomParams = {
     id: string;

@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 // SVGs
 import illustrationImg from '../assets/illustration.svg'
 import logoImg from '../assets/logo.svg'
-import googleIconImg from '../assets/google-icon.svg'
+import { BsGoogle } from 'react-icons/bs'
 
 // Contexts e Hooks
 import { useAuth } from '../hooks/useAuth'
@@ -29,17 +29,17 @@ export function Home() {
     }
 
     // Entrando em uma sala existente
-    async function handleJoinRoom(e: FormEvent){
+    async function handleJoinRoom(e: FormEvent) {
         e.preventDefault()
 
-        if(roomCode.trim() === ''){
+        if (roomCode.trim() === '') {
             return
         }
 
         // Verificando se a sala existe no db
         const roomRef = await database.ref(`rooms/${roomCode}`).get()
 
-        if (!roomRef.exists()){
+        if (!roomRef.exists()) {
             alert('Room does not exists')
             return
         }
@@ -75,14 +75,14 @@ export function Home() {
                     />
 
                     <button
-                        className='mt-16 h-12 rounded-lg font-medium bg-google flex justify-center items-center cursor-pointer border-0 text-[#fff] hover:brightness-90 transition-all'
+                        className='mt-16 h-12 rounded-lg font-medium bg-google flex justify-center items-center cursor-pointer border-0 text-[#fff] hover:brightness-110 transition-all hover:bg-details hover:text-purple-hover'
                         onClick={handleCreateRoom}
                     >
-                        <img
-                            src={googleIconImg}
-                            alt="logo do google"
-                            className='mr-8'
+                        <BsGoogle 
+                            size={24} 
+                            className="mr-2" 
                         />
+
                         Crie sua sala com o google
                     </button>
 
