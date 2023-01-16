@@ -13,6 +13,7 @@ import toast, { Toaster } from 'react-hot-toast'
 import logoImg from '../assets/logo.svg'
 import { CiUser } from 'react-icons/ci'
 import { Question } from "../components/Question"
+import { useRoom } from "../hooks/useRoom"
 
 
 // Tipagem
@@ -21,38 +22,19 @@ type RoomParams = {
     id: string;
 }
 
-type FirebaseQuestions = Record<string, {
-    author: {
-        name: string;
-        avatar: string;
-    }
-    content: string;
-    isAnswered: string;
-    isHighlighted: string;
-}>
-
-type QuestionType = {
-    id: string;
-    author: {
-        name: string;
-        avatar: string;
-    }
-    content: string;
-    isAnswered: string;
-    isHighlighted: string;
-}
-
 
 export function Room() {
     const navigate = useNavigate()
     const { user } = useAuth()
 
+
     const params = useParams<RoomParams>()
     const roomId = params.id;
+    const {title, questions} = useRoom(roomId as string)
+
 
     const [newQuestion, setNewQuestion] = useState('')
-    const [questions, setQuestions] = useState<QuestionType[]>([]) // qnd é array precisamos tipar o que vem dentro dele
-    const [title, setTitle] = useState('')
+
 
     function handleGoBack() {
         navigate(-1)
@@ -88,27 +70,7 @@ export function Room() {
         }
     }
 
-    useEffect(() => {
-        const roomRef = database.ref(`/rooms/${roomId}`)
-
-        // .on serve para ficar escutando lá na api (Realtime)
-        roomRef.on('value', room => {
-            const databaseRoom = room.val()
-            const firebaseQuestions: FirebaseQuestions = databaseRoom.questions ?? {}
-
-            const parsedQuestions = Object.entries(firebaseQuestions).map(([key, value]) => {
-                return {
-                    id: key,
-                    content: value.content,
-                    author: value.author,
-                    isAnswered: value.isAnswered,
-                    isHighlighted: value.isHighlighted
-                }
-            })
-            setTitle(databaseRoom.title)
-            setQuestions(parsedQuestions)
-        })
-    }, [roomId]) //passando roomID como critério para disparo da função useEffect para evitar bugs durante o uso da aplicação
+    
 
     return (
         <div>
